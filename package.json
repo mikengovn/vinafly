@@ -1,0 +1,40 @@
+{
+  "name": "vinafly",
+  "version": "1.0.0",
+  "description": "Autonomous drone food delivery app with isometric Hanoi, voice ordering, and real-time flight simulation",
+  "main": "vinafly.html",
+  "scripts": {
+    "test": "echo \"No tests yet. See CONTRIBUTING.md for manual testing checklist.\"",
+    "start": "open vinafly.html || xdg-open vinafly.html",
+    "serve": "python3 -m http.server 8000 --directory ."
+  },
+  "keywords": [
+    "drone",
+    "delivery",
+    "food",
+    "hanoi",
+    "vietnam",
+    "isometric",
+    "3d",
+    "app",
+    "voice",
+    "ai",
+    "flutter",
+    "web"
+  ],
+  "author": "VinaFly Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/vinafly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/vinafly/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/vinafly#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "private": true
+}

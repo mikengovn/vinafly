@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VinaFly — Drone Food Delivery · Hà Nội</title>
+<style>
+:root{
+  --jade:#12B5BC; --jade-d:#0B8F96; --jade-l:#66DCE0;
+  --lacq:#E85D3D; --gold:#F2B33D; --ink:#15221F; --ink-2:#5B6B67;
+  --rice:#FFFDF8; --mist:#EEF2FB; --line:rgba(21,34,31,.09);
+  --glass:rgba(255,255,255,.9);
+  --r-lg:30px; --r-md:20px; --r-sm:12px;
+  --shadow:0 18px 44px -18px rgba(21,34,31,.35);
+  --font:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--font); color:var(--ink);
+  background:
+    radial-gradient(1200px 700px at 15% -10%, #dcf5f0 0%, transparent 55%),
+    radial-gradient(1000px 700px at 110% 110%, #fde8dd 0%, transparent 50%),
+    #f2f4f0;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+input{font-family:inherit}
+
+/* ============ PHONE FRAME ============ */
+.stage{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.phone{
+  position:relative; width:min(402px,100vw); height:min(874px,100vh);
+  background:#0d1412; border-radius:52px; overflow:hidden;
+  box-shadow:0 0 0 11px #10100f, 0 0 0 13px #3a3a38, 0 60px 120px -30px rgba(21,34,31,.55);
+}
+@media (max-width:430px), (max-height:900px){
+  .phone{border-radius:0;box-shadow:none;width:100vw;height:100vh}
+}
+.screenwrap{position:absolute;inset:0;background:linear-gradient(180deg,#D7F3F0 0%,#EBF8F5 42%,#FDF8EF 100%)}
+
+/* status bar */
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:52px;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 26px 0; font-size:14px;font-weight:700;letter-spacing:.2px;
+  pointer-events:none; color:var(--ink);
+}
+.statusbar .icons{display:flex;gap:5px;align-items:center;font-size:12px}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:118px;height:32px;background:#0d1412;border-radius:20px;z-index:61}
+
+/* ============ SCREENS ============ */
+.screen{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  opacity:0; pointer-events:none; transform:translateX(26px);
+  transition:opacity .34s ease, transform .38s cubic-bezier(.22,.9,.3,1);
+  z-index:1; overflow:hidden;
+}
+.screen.active{opacity:1;pointer-events:auto;transform:none;z-index:5}
+@media (prefers-reduced-motion:reduce){ .screen{transition:opacity .2s} *{animation-duration:.001s !important} }
+
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ============ HOME ============ */
+#scr-home .hero{position:relative;height:356px;flex:none;overflow:hidden;background:transparent}
+#scr-home .hero svg.city{position:absolute;left:50%;top:52px;transform:translateX(-50%)}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9;filter:blur(1px);
+  animation:drift 26s linear infinite}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.cloud.c1{width:74px;height:22px;top:74px;left:-90px}
+.cloud.c1::before{width:30px;height:30px;top:-14px;left:14px}
+.cloud.c1::after{width:22px;height:22px;top:-9px;left:40px}
+.cloud.c2{width:56px;height:17px;top:130px;left:-70px;animation-duration:34s;animation-delay:-14s;opacity:.7}
+.cloud.c2::before{width:22px;height:22px;top:-10px;left:12px}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(560px)}}
+
+.home-top{position:absolute;top:56px;left:0;right:0;padding:0 20px;display:flex;align-items:center;justify-content:space-between;z-index:8}
+.addr{display:flex;align-items:center;gap:9px;background:var(--glass);backdrop-filter:blur(14px);
+  padding:9px 15px 9px 11px;border-radius:999px;box-shadow:0 8px 22px -10px rgba(21,34,31,.28)}
+.addr .dot{width:30px;height:30px;border-radius:50%;background:var(--jade);display:grid;place-items:center;font-size:14px;color:#fff}
+.addr small{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase}
+.addr b{font-size:13px}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--lacq));
+  display:grid;place-items:center;font-size:19px;box-shadow:0 8px 22px -10px rgba(21,34,31,.35)}
+
+.eta-chip{position:absolute;left:20px;bottom:16px;z-index:8;display:flex;align-items:center;gap:10px;
+  background:var(--glass);backdrop-filter:blur(14px);padding:10px 16px 10px 12px;border-radius:18px;
+  box-shadow:0 12px 30px -14px rgba(21,34,31,.35)}
+.eta-chip .ic{width:34px;height:34px;border-radius:11px;background:var(--jade);color:#fff;display:grid;place-items:center;font-size:16px}
+.eta-chip small{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-2);text-transform:uppercase}
+.eta-chip b{font-size:14px}
+.eta-chip b span{color:var(--jade)}
+
+.home-body{position:relative;margin-top:-30px;background:var(--rice);border-radius:30px 30px 0 0;
+  padding:22px 20px 130px;box-shadow:0 -14px 40px -20px rgba(21,34,31,.25)}
+.hello h1{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.hello h1 em{font-style:normal;color:var(--jade)}
+.hello p{font-size:13px;color:var(--ink-2);margin-top:3px}
+.search{margin-top:16px;display:flex;align-items:center;gap:10px;background:#F2F1EA;border-radius:16px;padding:13px 16px;color:var(--ink-2);font-size:14px}
+.cats{display:flex;gap:9px;margin-top:16px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:999px;
+  background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;transition:.2s}
+.cat.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 13px}
+.sect h2{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
+.sect button{font-size:12.5px;font-weight:700;color:var(--jade)}
+.rest-list{display:flex;flex-direction:column;gap:13px}
+.rest{display:flex;gap:13px;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);
+  padding:11px;align-items:center;transition:transform .15s;cursor:pointer}
+.rest:active{transform:scale(.98)}
+.rest .thumb{width:66px;height:66px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:30px;position:relative;overflow:hidden}
+.rest .thumb::after{content:'';position:absolute;inset:0;background:radial-gradient(60px 40px at 70% 20%,rgba(255,255,255,.7),transparent)}
+.rest .info{flex:1;min-width:0}
+.rest .info h3{font-size:14.5px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rest .info p{font-size:12px;color:var(--ink-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.tag{font-size:10.5px;font-weight:700;padding:3.5px 8px;border-radius:999px;background:#F2F1EA;color:var(--ink-2)}
+.tag.drone{background:#E0F7F6;color:var(--jade-d)}
+.tag.star{background:#FDF1DA;color:#A8720C}
+.rest .go{width:34px;height:34px;border-radius:50%;background:#F2F1EA;display:grid;place-items:center;flex:none;font-size:14px;color:var(--ink)}
+
+/* ============ NAV + VOICE ORB ============ */
+.navbar{position:absolute;left:14px;right:14px;bottom:14px;height:70px;z-index:40;
+  background:rgba(21,34,31,.92);backdrop-filter:blur(16px);border-radius:26px;
+  display:flex;align-items:center;justify-content:space-around;padding:0 8px;
+  box-shadow:0 24px 50px -18px rgba(21,34,31,.6)}
+.nav-it{display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.5);font-size:9.5px;font-weight:700;letter-spacing:.06em;width:58px}
+.nav-it .i{font-size:19px}
+.nav-it.on{color:#fff}
+.orb{width:62px;height:62px;border-radius:50%;margin-top:-34px;flex:none;position:relative;
+  background:radial-gradient(circle at 32% 28%,#7FE3E6,var(--jade) 58%,var(--jade-d));
+  box-shadow:0 14px 34px -8px rgba(18,181,188,.75),inset 0 2px 6px rgba(255,255,255,.5);
+  display:grid;place-items:center;color:#fff;font-size:24px}
+.orb::before{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(18,181,188,.4);animation:orbpulse 2.4s ease-out infinite}
+@keyframes orbpulse{0%{transform:scale(.85);opacity:.9}70%{transform:scale(1.25);opacity:0}100%{opacity:0}}
+
+/* ============ SUBPAGE CHROME ============ */
+.pagehead{flex:none;display:flex;align-items:center;gap:12px;padding:64px 20px 14px;z-index:6}
+.backbtn{width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 8px 20px -10px rgba(21,34,31,.3);
+  display:grid;place-items:center;font-size:16px;flex:none}
+.pagehead h1{font-size:17px;font-weight:800;flex:1;letter-spacing:-.01em}
+.pagehead .spacer{width:40px}
+
+/* ============ MENU ============ */
+#scr-menu{background:var(--rice)}
+.menu-hero{margin:6px 20px 0;height:130px;border-radius:22px;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;padding:16px;color:#fff}
+.menu-hero .big{position:absolute;right:8px;top:-6px;font-size:104px;opacity:.9;transform:rotate(8deg);filter:drop-shadow(0 12px 16px rgba(0,0,0,.2))}
+.menu-hero h2{font-size:20px;font-weight:800;text-shadow:0 2px 12px rgba(0,0,0,.3);position:relative}
+.menu-hero p{font-size:12px;opacity:.95;position:relative;margin-top:2px}
+.mstats{display:flex;gap:8px;padding:13px 20px 4px}
+.mstat{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.mstat b{display:block;font-size:14px}
+.mstat b span{color:var(--jade)}
+.mstat small{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--ink-2);text-transform:uppercase}
+.items{padding:12px 20px 170px;display:flex;flex-direction:column;gap:11px}
+.item{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:12px;align-items:center}
+.item .em{width:52px;height:52px;flex:none;border-radius:13px;background:#F6F3EA;display:grid;place-items:center;font-size:26px}
+.item .nm{flex:1;min-width:0}
+.item .nm h4{font-size:14px;font-weight:750}
+.item .nm p{font-size:11.5px;color:var(--ink-2);margin-top:2px}
+.item .nm b{display:block;font-size:13.5px;margin-top:5px;color:var(--jade-d)}
+.step{display:flex;align-items:center;gap:9px}
+.step button{width:30px;height:30px;border-radius:10px;background:#F2F1EA;font-size:16px;font-weight:800;display:grid;place-items:center}
+.step button.add{background:var(--ink);color:#fff}
+.step span{min-width:14px;text-align:center;font-weight:800;font-size:14px}
+
+.cartbar{position:absolute;left:16px;right:16px;bottom:96px;z-index:30;
+  background:var(--jade);color:#fff;border-radius:20px;padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 20px 40px -14px rgba(18,181,188,.7);
+  transform:translateY(160px);transition:transform .4s cubic-bezier(.2,.9,.3,1.1)}
+.cartbar.show{transform:none}
+.cartbar small{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;opacity:.85;text-transform:uppercase}
+.cartbar b{font-size:15.5px}
+.cartbar .cta{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
+
+/* ============ SATELLITE MAP ============ */
+#scr-map,#scr-map2{background:#20261c}
+.mapview{flex:1;position:relative;overflow:hidden;touch-action:none;cursor:grab}
+.mapview:active{cursor:grabbing}
+.maplayer{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.map-tools{position:absolute;right:16px;top:120px;display:flex;flex-direction:column;gap:9px;z-index:10}
+.mtool{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.95);box-shadow:0 10px 24px -8px rgba(0,0,0,.5);
+  display:grid;place-items:center;font-size:17px;font-weight:800}
+.map-hint{position:absolute;top:120px;left:16px;right:76px;z-index:10;background:rgba(21,34,31,.85);color:#fff;
+  backdrop-filter:blur(10px);border-radius:14px;padding:10px 14px;font-size:12px;line-height:1.45}
+.map-hint b{color:#A5EEF0}
+.sat-credit{position:absolute;left:14px;bottom:8px;color:rgba(255,255,255,.55);font-size:10px;letter-spacing:.15em;font-weight:700;z-index:9;text-transform:uppercase}
+.mapsheet{flex:none;background:var(--rice);border-radius:26px 26px 0 0;padding:20px 20px 20px;z-index:12;
+  box-shadow:0 -18px 40px -18px rgba(0,0,0,.6);position:relative}
+.mapsheet .grab{width:42px;height:5px;border-radius:99px;background:#DAD7CC;margin:-6px auto 14px}
+.mapsheet h2{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.mapsheet h2 span{color:var(--jade)}
+.mapsheet .sub{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.coordrow{display:flex;gap:9px;margin-top:14px}
+.coord{flex:1;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px 12px}
+.coord small{font-size:9.5px;font-weight:800;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase}
+.coord b{display:block;font-size:13.5px;font-variant-numeric:tabular-nums}
+.addrfield{margin-top:10px;display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:11px 13px}
+.addrfield input{border:none;outline:none;flex:1;font-size:13px;background:none;color:var(--ink)}
+.bigbtn{position:relative;width:100%;margin-top:14px;background:var(--ink);color:#fff;border-radius:999px;padding:17px 17px 17px 52px;
+  font-size:15px;font-weight:800;letter-spacing:.01em;display:flex;align-items:center;justify-content:center;gap:9px;transition:.2s}
+.bigbtn:active{transform:scale(.98)}
+.bigbtn.jade{background:var(--jade);box-shadow:0 16px 34px -12px rgba(18,181,188,.65)}
+.cta-ic{position:absolute;left:7px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:18px;border:2.5px solid #0d1412}
+.bigbtn:disabled{opacity:.45}
+
+/* ============ CHECKOUT ============ */
+#scr-pay{background:var(--rice)}
+.paywrap{padding:6px 20px 40px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:16px}
+.card + .card{margin-top:13px}
+.card h3{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
+.orow{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0}
+.orow b{font-variant-numeric:tabular-nums}
+.orow.total{border-top:1.5px dashed var(--line);margin-top:8px;padding-top:12px;font-size:15px;font-weight:800}
+.orow.total b{color:var(--jade-d)}
+.routecard{display:flex;align-items:center;gap:12px}
+.routecard .leg{flex:1}
+.routecard .leg small{font-size:9.5px;font-weight:800;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase}
+.routecard .leg b{display:block;font-size:13px;margin-top:2px}
+.routecard .fly{width:44px;height:44px;border-radius:50%;background:#E0F7F6;display:grid;place-items:center;font-size:19px;flex:none}
+.pays{display:flex;flex-direction:column;gap:9px}
+.pay{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:15px;padding:11px 13px;cursor:pointer;transition:.18s;background:#fff}
+.pay.on{border-color:var(--jade);background:#EFFBFA;box-shadow:0 0 0 3px rgba(18,181,188,.12)}
+.pay .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:15px;flex:none;letter-spacing:-.02em}
+.pay .t{flex:1}
+.pay .t b{font-size:13.5px;display:block}
+.pay .t small{font-size:11px;color:var(--ink-2)}
+.pay .radio{width:20px;height:20px;border-radius:50%;border:2px solid #D8D5CA;display:grid;place-items:center}
+.pay.on .radio{border-color:var(--jade)}
+.pay.on .radio::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--jade)}
+
+/* ============ TRACKING ============ */
+#scr-track{background:linear-gradient(180deg,#C4EDEA 0%,#E2F6F3 55%,#F6F1E2 100%)}
+.trackworld{position:absolute;inset:0;overflow:hidden}
+.trackworld svg.city{position:absolute;left:0;top:0}
+.track-top{position:absolute;top:60px;left:0;right:0;display:flex;justify-content:center;z-index:12;pointer-events:none}
+.flight-pill{background:rgba(21,34,31,.88);backdrop-filter:blur(12px);color:#fff;border-radius:999px;
+  padding:9px 18px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;box-shadow:0 14px 32px -12px rgba(0,0,0,.5)}
+.flight-pill .live{width:8px;height:8px;border-radius:50%;background:#4EE6A8;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.trackpanel{position:absolute;left:14px;right:14px;bottom:16px;z-index:14;
+  background:var(--glass);backdrop-filter:blur(20px);border-radius:30px;padding:19px 19px 17px;
+  box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.7)}
+.tp-row1{display:flex;align-items:center;justify-content:space-between}
+.tp-status{display:flex;align-items:center;gap:10px}
+.tp-status .spin{width:30px;height:30px;border-radius:50%;background:#E0F7F6;display:grid;place-items:center;font-size:15px}
+.tp-status b{font-size:14.5px;display:block}
+.tp-status small{font-size:11px;color:var(--ink-2)}
+.tp-pct{font-size:30px;font-weight:850;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pbar{margin-top:13px;height:36px;position:relative}
+.pbar .track{position:absolute;top:50%;left:0;right:0;height:14px;transform:translateY(-50%);border-radius:99px;overflow:hidden;
+  background:repeating-linear-gradient(115deg,#E4E1D6 0 6px,#EFEDE4 6px 12px)}
+.pbar .fill{position:absolute;top:50%;left:0;height:14px;transform:translateY(-50%);border-radius:99px;
+  background:linear-gradient(90deg,var(--jade-l),var(--jade));width:0%;transition:width .3s linear}
+.pbar .knob{position:absolute;top:50%;left:0%;width:36px;height:36px;transform:translate(-50%,-50%);
+  background:#fff;border-radius:50%;box-shadow:0 8px 18px -6px rgba(21,34,31,.4);display:grid;place-items:center;font-size:17px;transition:left .3s linear}
+.tp-grid{display:flex;gap:10px;margin-top:13px}
+.tp-cell{flex:1;background:rgba(255,255,255,.75);border-radius:15px;padding:10px 13px}
+.tp-cell small{font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2)}
+.tp-cell b{display:block;font-size:17px;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tp-cell b .u{font-size:11px;font-weight:700;color:var(--ink-2)}
+.tp-route{display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:13px;border-top:1.5px dashed rgba(21,34,31,.14)}
+.tp-route .pt{flex:1;min-width:0}
+.tp-route .pt small{font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2)}
+.tp-route .pt b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.tp-route .pt.to{text-align:right}
+.tp-route .swap{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 6px 14px -6px rgba(21,34,31,.3)}
+.phases{display:flex;gap:5px;margin-top:14px}
+.ph{flex:1;text-align:center}
+.ph .bar{height:5px;border-radius:99px;background:#E2DFD4;margin-bottom:6px;overflow:hidden;position:relative}
+.ph .bar i{position:absolute;inset:0;background:var(--jade);border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.ph.done .bar i,.ph.now .bar i{transform:scaleX(1)}
+.ph.now .bar i{background:linear-gradient(90deg,var(--jade),var(--jade-l))}
+.ph small{font-size:8.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#B9B5A8}
+.ph.done small,.ph.now small{color:var(--jade-d)}
+
+/* delivered */
+.donewrap{position:absolute;inset:0;z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(253,250,242,.92);backdrop-filter:blur(18px);text-align:center;padding:40px}
+.donewrap.show{display:flex}
+.done-badge{width:108px;height:108px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#7FE3E6,var(--jade) 60%,var(--jade-d));
+  display:grid;place-items:center;font-size:50px;color:#fff;box-shadow:0 26px 60px -18px rgba(18,181,188,.7);animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.donewrap h2{font-size:25px;font-weight:850;margin-top:22px;letter-spacing:-.02em}
+.donewrap p{font-size:13.5px;color:var(--ink-2);margin-top:8px;line-height:1.55;max-width:280px}
+.stars{display:flex;gap:8px;margin-top:20px;font-size:28px}
+.stars span{cursor:pointer;filter:grayscale(1);opacity:.4;transition:.15s}
+.stars span.on{filter:none;opacity:1;transform:scale(1.12)}
+.confetti{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;z-index:19;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(920px) rotate(720deg);opacity:.2}}
+
+/* ============ VOICE ============ */
+.voicewrap{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;
+  background:rgba(13,22,20,.72);backdrop-filter:blur(22px)}
+.voicewrap.show{display:flex}
+.voice-close{position:absolute;top:64px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:16px;display:grid;place-items:center;z-index:5}
+.voice-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:#fff}
+.vorb{width:120px;height:120px;border-radius:50%;position:relative;flex:none;
+  background:radial-gradient(circle at 32% 28%,#A5EEF0,var(--jade) 58%,var(--jade-d));
+  box-shadow:0 30px 70px -18px rgba(18,181,188,.8);display:grid;place-items:center;font-size:44px}
+.vorb::before,.vorb::after{content:'';position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(165,238,240,.5);animation:orbpulse 1.8s ease-out infinite}
+.vorb::after{animation-delay:.7s}
+.vbars{display:flex;gap:5px;align-items:center;height:42px;margin-top:26px}
+.vbars i{width:5px;border-radius:99px;background:#A5EEF0;height:8px;animation:veq 1s ease-in-out infinite}
+.vbars i:nth-child(2n){animation-delay:.15s}.vbars i:nth-child(3n){animation-delay:.3s}.vbars i:nth-child(5n){animation-delay:.45s}
+@keyframes veq{0%,100%{height:7px}50%{height:36px}}
+.vlabel{margin-top:18px;font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#A5EEF0}
+.vtext{margin-top:14px;font-size:19px;font-weight:650;line-height:1.5;min-height:88px;max-width:310px}
+.vtext .cur{border-right:2px solid #A5EEF0;animation:blink 1s infinite}
+.vhintchip{margin-top:8px;font-size:12px;color:rgba(255,255,255,.65);background:rgba(255,255,255,.1);padding:9px 15px;border-radius:999px;line-height:1.4}
+.vcard{margin-top:22px;width:100%;max-width:330px;background:#fff;color:var(--ink);border-radius:22px;padding:18px;text-align:left;
+  display:none;animation:pop .5s cubic-bezier(.2,1.3,.4,1);box-shadow:0 30px 70px -20px rgba(0,0,0,.6)}
+.vcard.show{display:block}
+.vcard .aihead{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--jade-d)}
+.vcard .aihead .chip{width:26px;height:26px;border-radius:9px;background:var(--jade);color:#fff;display:grid;place-items:center;font-size:13px}
+.vrow{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.vrow:last-of-type{border:none}
+.vrow .em{width:38px;height:38px;border-radius:11px;background:#F4F2E9;display:grid;place-items:center;font-size:19px;flex:none}
+.vrow small{font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2);display:block}
+.vrow b{font-size:13.5px}
+
+/* toast */
+.toast{position:absolute;left:50%;bottom:104px;transform:translate(-50%,20px);background:rgba(21,34,31,.94);color:#fff;
+  padding:12px 20px;border-radius:16px;font-size:13px;font-weight:650;z-index:90;opacity:0;transition:.35s;pointer-events:none;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.6);white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* drone bits */
+.rotor{animation:rspin .12s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rspin{to{transform:rotate(180deg)}}
+.dronebob{animation:bob 3.4s ease-in-out infinite;transform-box:fill-box}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+/* ===== v3 · frosted glass over the living city ===== */
+.bgcity{position:absolute;left:50%;top:44px;transform:translateX(-50%);animation:cityfloat 10s ease-in-out infinite}
+@keyframes cityfloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-9px)}}
+.home-body{background:rgba(255,255,255,.55);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);box-shadow:0 -14px 40px -22px rgba(21,34,31,.22)}
+.search{background:rgba(255,255,255,.9);box-shadow:0 12px 28px -16px rgba(21,34,31,.28);color:#8A958F}
+.rest{background:rgba(255,255,255,.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:rgba(255,255,255,.7)}
+.rest .go{background:rgba(255,255,255,.92)}
+.cat{flex-direction:column;align-items:flex-start;justify-content:space-between;width:96px;height:112px;flex:none;border-radius:20px;padding:12px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 14px 28px -18px rgba(21,34,31,.3);border:2px solid transparent;font-size:12.5px;line-height:1.28;text-align:left;white-space:normal}
+.cat .em{font-size:33px;align-self:flex-end;filter:drop-shadow(0 7px 7px rgba(21,34,31,.18))}
+.cat.on{background:rgba(255,255,255,.96);color:var(--ink);border-color:var(--jade);box-shadow:0 14px 30px -14px rgba(18,181,188,.5)}
+#scr-menu,#scr-pay{background:transparent}
+.pagehead h1{text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.menu-hero{box-shadow:0 20px 44px -18px rgba(21,34,31,.4)}
+.item,.mstat,.card,.pay{background:rgba(255,255,255,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,.75)}
+.pay.on{background:rgba(238,253,252,.88)}
+.item .em{background:rgba(255,255,255,.85)}
+.backbtn{background:rgba(255,255,255,.88);backdrop-filter:blur(10px)}
+.mapsheet{background:rgba(255,253,248,.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.coord,.addrfield{background:rgba(255,255,255,.88)}
+.navbar{background:rgba(255,255,255,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 22px 48px -18px rgba(21,34,31,.38);border:1px solid rgba(255,255,255,.8)}
+.nav-it{color:rgba(21,34,31,.4)}
+.nav-it.on{color:var(--jade-d)}
+.trackpanel{background:rgba(255,255,255,.72)}
+.pbar .knob{box-shadow:0 8px 20px -6px rgba(18,181,188,.75),0 0 0 3px rgba(255,255,255,.85)}
+.kfly{display:block;animation:kbob 1.9s ease-in-out infinite}
+@keyframes kbob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-9deg)}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar"><span id="clock">21:07</span><div class="icons"><span>▮▮▮▯</span><span>⌁</span><span>▐▌ 92%</span></div></div>
+  <div class="screenwrap">
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <svg class="bgcity" id="bgCity" width="840" height="638" viewBox="0 0 1000 760"></svg>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section class="screen active" id="scr-home">
+    <div class="scroll">
+      <div class="hero">
+        <div class="home-top">
+          <div class="addr"><div class="dot">⌖</div><div><small>Giao tới · Deliver to</small><b>37 Hàng Đào, Hoàn Kiếm</b></div></div>
+          <div class="avatar">👨🏼</div>
+        </div>
+        <div class="eta-chip"><div class="ic">🛸</div><div><small>Drone ETA to you</small><b><span id="homeEta">7–9</span> min · skyway clear</b></div></div>
+      </div>
+      <div class="home-body">
+        <div class="hello">
+          <h1>Chào buổi tối, <em>Mike</em> 🌙</h1>
+          <p>Hà Nội is flying tonight — 14 drones over the Old Quarter.</p>
+        </div>
+        <div class="search">🔍 <span>Phở, bún chả, cà phê trứng…</span></div>
+        <div class="cats" id="cats"></div>
+        <div class="sect"><h2>Drone-ready near you</h2><button>Map view</button></div>
+        <div class="rest-list" id="restList"></div>
+      </div>
+    </div>
+    <div class="cartbar" id="cartbarHome"></div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section class="screen" id="scr-menu">
+    <div class="pagehead"><button class="backbtn" data-back="scr-home">←</button><h1 id="menuTitle">Menu</h1><div class="spacer"></div></div>
+    <div class="scroll">
+      <div class="menu-hero" id="menuHero"><span class="big" id="menuBig">🍜</span><div><h2 id="menuName"></h2><p id="menuSub"></p></div></div>
+      <div class="mstats">
+        <div class="mstat"><b>⭐ <span id="menuRate"></span></b><small>rating</small></div>
+        <div class="mstat"><b><span id="menuFly"></span> min</b><small>drone flight</small></div>
+        <div class="mstat"><b><span id="menuDist"></span></b><small>as the drone flies</small></div>
+      </div>
+      <div class="items" id="itemList"></div>
+    </div>
+    <div class="cartbar" id="cartbarMenu"></div>
+  </section>
+
+  <!-- ============ LANDING MAP (checkout flow) ============ -->
+  <section class="screen" id="scr-map">
+    <div class="mapview" id="mapview">
+      <div class="maplayer" id="maplayer"></div>
+      <div class="pagehead" style="position:absolute;top:0;left:0;right:0;">
+        <button class="backbtn" data-back="scr-menu">←</button>
+        <h1 style="color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)">Landing spot</h1><div class="spacer"></div>
+      </div>
+      <div class="map-hint" id="mapHint"><b>Tap the satellite view</b> to drop your landing pin. Drag to pan · pinch or ＋/－ to zoom. The drone needs a clear 2×2 m spot.</div>
+      <div class="map-tools">
+        <button class="mtool" id="zin">＋</button>
+        <button class="mtool" id="zout">－</button>
+        <button class="mtool" id="zloc">◎</button>
+      </div>
+      <div class="sat-credit">Vệ tinh · VINAFLY SkyGrid</div>
+    </div>
+    <div class="mapsheet">
+      <div class="grab"></div>
+      <h2>Chọn điểm hạ cánh · <span>choose where the drone lands</span></h2>
+      <p class="sub" id="zoneMsg">Rooftop, balcony or courtyard — anywhere the sky can see.</p>
+      <div class="coordrow">
+        <div class="coord"><small>Latitude</small><b id="latVal">21.028500</b></div>
+        <div class="coord"><small>Longitude</small><b id="lngVal">105.854200</b></div>
+      </div>
+      <div class="addrfield">📍 <input id="addrInput" value="37 Hàng Đào, Hoàn Kiếm, Hà Nội"></div>
+      <button class="bigbtn jade" id="confirmSpot"><span class="cta-ic">🛰️</span>Confirm landing spot</button>
+    </div>
+  </section>
+
+  <!-- ============ CHECKOUT ============ -->
+  <section class="screen" id="scr-pay">
+    <div class="pagehead"><button class="backbtn" data-back="scr-map">←</button><h1>Checkout</h1><div class="spacer"></div></div>
+    <div class="scroll"><div class="paywrap">
+      <div class="card routecard">
+        <div class="leg"><small>From</small><b id="payFrom">—</b></div>
+        <div class="fly">🛸</div>
+        <div class="leg" style="text-align:right"><small>To</small><b id="payTo">Your landing pin</b></div>
+      </div>
+      <div class="card"><h3>Order · đơn hàng</h3><div id="payItems"></div>
+        <div class="orow"><span>Drone delivery (<span id="payMins"></span> min)</span><b id="payFee"></b></div>
+        <div class="orow" style="color:var(--jade-d)"><span>Sky-lane off-peak</span><b>−5.000 ₫</b></div>
+        <div class="orow total"><span>Total</span><b id="payTotal"></b></div>
+      </div>
+      <div class="card"><h3>Thanh toán · payment</h3><div class="pays" id="payList"></div></div>
+      <button class="bigbtn jade" id="confirmOrder" style="margin-top:16px"><span class="cta-ic">🛸</span>Confirm order · Fly now</button>
+      <p style="text-align:center;font-size:11px;color:var(--ink-2);margin-top:12px">Autonomous flight VN-CAA licensed · zero-emission delivery</p>
+    </div></div>
+  </section>
+
+  <!-- ============ TRACKING ============ -->
+  <section class="screen" id="scr-track">
+    <div class="trackworld" id="trackworld">
+      <svg class="city" id="trackCity" width="1000" height="760" viewBox="0 0 1000 760"></svg>
+    </div>
+    <div class="track-top"><div class="flight-pill"><span class="live"></span><span id="flightNo">Flight VINAFLY-021 · autonomous</span><span>·</span><span id="altPill">0 m</span></div></div>
+    <div class="trackpanel">
+      <div class="tp-row1">
+        <div class="tp-status"><div class="spin" id="stEmoji">📦</div><div><b id="stMain">Order received</b><small id="stSub">Đắc Kim is packing your bún chả</small></div></div>
+        <div class="tp-pct" id="pct">0%</div>
+      </div>
+      <div class="pbar"><div class="track"></div><div class="fill" id="pfill"></div><div class="knob" id="pknob"><span class="kfly">🛸</span></div></div>
+      <div class="tp-grid">
+        <div class="tp-cell"><small>Arrives in</small><b id="etaClock">--:--</b></div>
+        <div class="tp-cell"><small>Speed</small><b id="spd">0 <span class="u">km/h</span></b></div>
+        <div class="tp-cell"><small>Total</small><b id="trkTotal">—</b></div>
+      </div>
+      <div class="tp-route">
+        <div class="pt"><small>From</small><b id="trkFrom">—</b></div>
+        <div class="swap">⇄</div>
+        <div class="pt to"><small>To</small><b id="trkTo">Landing pin</b></div>
+      </div>
+      <div class="phases" id="phases"></div>
+    </div>
+    <div class="donewrap" id="donewrap">
+      <div class="done-badge">✓</div>
+      <h2>Đã giao! Delivered</h2>
+      <p id="doneMsg">Your order touched down gently on the tether. Bon appétit — ăn ngon miệng nhé!</p>
+      <div class="stars" id="stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+      <button class="bigbtn jade" style="max-width:280px;margin-top:26px" id="doneHome"><span class="cta-ic">⌂</span>Back to home</button>
+    </div>
+  </section>
+
+  <!-- ============ VOICE ============ -->
+  <div class="voicewrap" id="voicewrap">
+    <button class="voice-close" id="voiceClose">✕</button>
+    <div class="voice-inner">
+      <div class="vorb" id="vorb">🎙️</div>
+      <div class="vbars" id="vbars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="vlabel" id="vlabel">Listening…</div>
+      <div class="vtext" id="vtext"></div>
+      <div class="vhintchip">Try: “Order bún chả at Bún Chả Đắc Kim and pay with Vietcombank”</div>
+      <div class="vcard" id="vcard">
+        <div class="aihead"><span class="chip">✦</span> AI created your order</div>
+        <div class="vrow"><div class="em" id="vcEm">🍢</div><div><small>Restaurant</small><b id="vcRest"></b></div></div>
+        <div class="vrow"><div class="em">🥡</div><div><small>Item</small><b id="vcItem"></b></div></div>
+        <div class="vrow"><div class="em">🏦</div><div><small>Payment</small><b id="vcPay"></b></div></div>
+        <div class="vrow"><div class="em">💰</div><div><small>Total incl. drone fee</small><b id="vcTotal"></b></div></div>
+        <button class="bigbtn jade" id="vcNext" style="margin-top:8px"><span class="cta-ic">🛰️</span>Choose landing spot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- nav -->
+  <div class="navbar" id="navbar">
+    <button class="nav-it on"><span class="i">⌂</span>Home</button>
+    <button class="nav-it"><span class="i">🧾</span>Orders</button>
+    <button class="orb" id="voiceBtn">🎙️</button>
+    <button class="nav-it"><span class="i">🗺️</span>Sky map</button>
+    <button class="nav-it"><span class="i">👤</span>Profile</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+</div>
+<script>
+'use strict';
+/* =================== DATA =================== */
+const VND = n => n.toLocaleString('vi-VN') + ' ₫';
+const $ = id => document.getElementById(id);
+
+const RESTAURANTS = [
+ {id:'dackim', name:'Bún Chả Đắc Kim', sub:'Bún chả than hoa · 1 Hàng Mành', emoji:'🍢', rating:'4.8', fly:8, dist:'1.2 km',
+  tint:'#FFE3D2', hero:'linear-gradient(120deg,#E85D3D,#F2953D)',
+  items:[{n:'Bún chả đặc biệt',e:'Charcoal-grilled pork, herbs, nước chấm',p:75000,em:'🍢'},
+         {n:'Bún chả truyền thống',e:'The 1966 classic bowl',p:60000,em:'🥢'},
+         {n:'Nem cua bể (2 cuốn)',e:'Sea-crab spring rolls',p:50000,em:'🦀'},
+         {n:'Trà đá chanh',e:'Iced lime tea',p:10000,em:'🧊'}]},
+ {id:'phothin', name:'Phở Thìn 13 Lò Đúc', sub:'Phở tái lăn · Hai Bà Trưng', emoji:'🍜', rating:'4.7', fly:10, dist:'2.4 km',
+  tint:'#FFF0C9', hero:'linear-gradient(120deg,#C98A2B,#F2B33D)',
+  items:[{n:'Phở tái lăn',e:'Wok-seared beef phở',p:90000,em:'🍜'},
+         {n:'Phở chín nạm',e:'Slow-brisket phở',p:80000,em:'🥩'},
+         {n:'Quẩy nóng',e:'Fried dough sticks',p:10000,em:'🥖'}]},
+ {id:'banhmi25', name:'Bánh Mì 25', sub:'Bánh mì lò củi · Hàng Cá', emoji:'🥖', rating:'4.9', fly:6, dist:'0.8 km',
+  tint:'#E4F3D9', hero:'linear-gradient(120deg,#4C9A56,#8CC63F)',
+  items:[{n:'Bánh mì thập cẩm',e:'Everything baguette',p:40000,em:'🥖'},
+         {n:'Bánh mì pate trứng',e:'Pâté & egg',p:30000,em:'🍳'},
+         {n:'Cà phê sữa đá',e:'Iced milk coffee',p:30000,em:'🥤'}]},
+ {id:'chaca', name:'Chả Cá Thăng Long', sub:'Chả cá lăng · Đường Thành', emoji:'🐟', rating:'4.6', fly:9, dist:'1.6 km',
+  tint:'#D9EDF7', hero:'linear-gradient(120deg,#1D7A8C,#3FB2C4)',
+  items:[{n:'Chả cá lăng (suất)',e:'Turmeric-dill river fish',p:130000,em:'🐟'},
+         {n:'Bún + rau thơm',e:'Noodles & herbs set',p:20000,em:'🌿'}]},
+ {id:'cong', name:'Cộng Cà Phê', sub:'Cà phê cốt dừa · Nhà Thờ', emoji:'☕', rating:'4.7', fly:7, dist:'1.0 km',
+  tint:'#E6E0D2', hero:'linear-gradient(120deg,#3B4A38,#6B7A55)',
+  items:[{n:'Cốt dừa cà phê',e:'Coconut coffee slush',p:45000,em:'🥥'},
+         {n:'Bạc xỉu',e:'Milky Saigon-style coffee',p:40000,em:'☕'},
+         {n:'Cà phê trứng',e:'Hanoi egg coffee',p:45000,em:'🍮'}]},
+ {id:'xoiyen', name:'Xôi Yến', sub:'Xôi xéo · Nguyễn Hữu Huân', emoji:'🍚', rating:'4.5', fly:7, dist:'1.1 km',
+  tint:'#FBEAD3', hero:'linear-gradient(120deg,#B8860B,#E2B04A)',
+  items:[{n:'Xôi xéo gà',e:'Sticky rice, mung bean, chicken',p:45000,em:'🍗'},
+         {n:'Xôi thịt kho trứng',e:'Braised pork & egg',p:50000,em:'🥚'}]},
+];
+const CATS = [['🔥','Tất cả'],['🍜','Phở'],['🍢','Bún chả'],['🥖','Bánh mì'],['☕','Cà phê'],['🍧','Chè'],['🦞','Hải sản']];
+const PAYMENTS = [
+ {id:'momo', name:'MoMo', sub:'Ví điện tử · **84 90', bg:'#A50064', tx:'mo'},
+ {id:'zalo', name:'ZaloPay', sub:'Ví điện tử · linked', bg:'#0068FF', tx:'Z'},
+ {id:'viettel', name:'ViettelPay', sub:'Viettel Money', bg:'#EE0033', tx:'V'},
+ {id:'bank', name:'Bank Transfer', sub:'Vietcombank · VietQR', bg:'#0B7A45', tx:'₫'},
+ {id:'visa', name:'Visa / Mastercard', sub:'Visa •••• 4021', bg:'#1A1F71', tx:'VISA'},
+];
+const DELIVERY_FEE = 20000, DISCOUNT = 5000;
+
+const state = { rest:null, cart:{}, payment:'momo', pin:null, voice:false, voicePayName:null };
+
+/* =================== NAV =================== */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  $('navbar').style.display = (id==='scr-home') ? 'flex' : 'none';
+  if(id==='scr-map') initMap();
+}
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>show(b.dataset.back));
+let toastT;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+setInterval(()=>{const d=new Date();$('clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');},1000);
+
+/* =================== ISOMETRIC HANOI =================== */
+const U=26, OX=500, OY=170;
+const iso=(x,y,z=0)=>[OX+(x-y)*U, OY+(x+y)*U*0.5-(z||0)];
+const P=pts=>pts.map(p=>p.join(',')).join(' ');
+const pg=(pts,f,o='')=>`<polygon points="${P(pts)}" fill="${f}" ${o}/>`;
+const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;
+  const m=v=>Math.max(0,Math.min(255,Math.round(v*f)));
+  return '#'+((1<<24)+(m(r)<<16)+(m(g)<<8)+m(b)).toString(16).slice(1);};
+function box(x,y,w,d,h,c,z0=0){
+  const A=iso(x,y,z0+h),B=iso(x+w,y,z0+h),C=iso(x+w,y+d,z0+h),D=iso(x,y+d,z0+h);
+  const B0=iso(x+w,y,z0),C0=iso(x+w,y+d,z0),D0=iso(x,y+d,z0);
+  return pg([D,C,C0,D0],shade(c,.82)) + pg([C,B,B0,C0],shade(c,.66)) + pg([A,B,C,D],c);
+}
+const roof=(x,y,w,d,h,rh,c)=>{
+  const B=iso(x+w,y,h),C=iso(x+w,y+d,h),D=iso(x,y+d,h),T=iso(x+w/2,y+d/2,h+rh);
+  return pg([T,B,C],shade(c,.95)) + pg([T,C,D],shade(c,.72));
+};
+function tree(x,y,s=1){
+  const [tx,ty]=iso(x,y);
+  return `<line x1="${tx}" y1="${ty}" x2="${tx}" y2="${ty-9*s}" stroke="#C6CCD6" stroke-width="${3*s}"/>
+  <circle cx="${tx}" cy="${ty-16*s}" r="${11*s}" fill="#E7EBF1"/>
+  <circle cx="${tx-5*s}" cy="${ty-20*s}" r="${8*s}" fill="#F2F5F9"/>
+  <circle cx="${tx+5.5*s}" cy="${ty-13*s}" r="${7*s}" fill="#DBE0E9"/>`;
+}
+function tubeHouse(x,y,h,c){
+  let s = box(x,y,.95,1.5,h,c);
+  // balconies on front (y+d) face
+  const floors=Math.max(2,Math.round(h/22));
+  for(let i=1;i<floors;i++){
+    const z=h*i/floors;
+    const a=iso(x,y+1.5,z),b=iso(x+.95,y+1.5,z);
+    s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${shade(c,.55)}" stroke-width="2.4"/>`;
+  }
+  // rooftop water tank
+  s += box(x+.22,y+.35,.34,.34,9,'#B9C4D6',h);
+  return s;
+}
+function pin(x,y,z,color,glyph,scale=1){
+  const [px,py]=iso(x,y,z);
+  return `<g transform="translate(${px},${py})">
+    <ellipse cx="0" cy="4" rx="${9*scale}" ry="${3.4*scale}" fill="rgba(21,34,31,.25)"/>
+    <path d="M0,0 C ${-15*scale},${-20*scale} ${-15*scale},${-42*scale} 0,${-42*scale} C ${15*scale},${-42*scale} ${15*scale},${-20*scale} 0,0 Z" fill="${color}" stroke="#fff" stroke-width="${2.5*scale}"/>
+    <circle cx="0" cy="${-27*scale}" r="${10.5*scale}" fill="#fff"/>
+    <text x="0" y="${-22.5*scale}" text-anchor="middle" font-size="${12*scale}">${glyph}</text></g>`;
+}
+function droneSVG(id){
+  return `<g id="${id}">
+    <g id="${id}-tether"></g>
+    <g id="${id}-body">
+      <line x1="-19" y1="-8" x2="19" y2="8" stroke="#7C848E" stroke-width="3.4" stroke-linecap="round"/>
+      <line x1="19" y1="-8" x2="-19" y2="8" stroke="#7C848E" stroke-width="3.4" stroke-linecap="round"/>
+      <g class="rotor" transform="translate(-19,-8)"><ellipse rx="11" ry="3.4" fill="rgba(40,50,48,.55)"/></g>
+      <g class="rotor" transform="translate(19,-8)"><ellipse rx="11" ry="3.4" fill="rgba(40,50,48,.55)"/></g>
+      <g class="rotor" transform="translate(-19,8)"><ellipse rx="11" ry="3.4" fill="rgba(40,50,48,.55)"/></g>
+      <g class="rotor" transform="translate(19,8)"><ellipse rx="11" ry="3.4" fill="rgba(40,50,48,.55)"/></g>
+      <ellipse cx="0" cy="0" rx="12" ry="8.5" fill="#F6F8FA" stroke="#C9D1D8" stroke-width="1.6"/>
+      <ellipse cx="-3" cy="-2" rx="4.5" ry="3" fill="#12B5BC"/>
+      <g id="${id}-box"><rect x="-8" y="12" width="16" height="12" rx="2" fill="#D8A968" stroke="#B9884C" stroke-width="1.4"/>
+        <line x1="0" y1="12" x2="0" y2="24" stroke="#EFE0C4" stroke-width="3"/>
+        <line x1="-6" y1="3" x2="-6" y2="12" stroke="#9AA3AB" stroke-width="1.4"/>
+        <line x1="6" y1="3" x2="6" y2="12" stroke="#9AA3AB" stroke-width="1.4"/></g>
+    </g></g>`;
+}
+/* build the shared Hanoi scene; returns key screen-space anchors */
+function buildCity(svg, opts={}){
+  let g='';
+  const rim=34, TEAL='#12B5BC';
+  // floating island — matte white / light gray
+  g+=`<ellipse cx="${OX}" cy="${OY+19*U+56}" rx="330" ry="46" fill="rgba(21,34,31,.10)"/>`;
+  g+=pg([iso(0,19),iso(19,19),[iso(19,19)[0],iso(19,19)[1]+rim],[iso(0,19)[0],iso(0,19)[1]+rim]],'#E3E8F1');
+  g+=pg([iso(19,0),iso(19,19),[iso(19,19)[0],iso(19,19)[1]+rim],[iso(19,0)[0],iso(19,0)[1]+rim]],'#D4DBE7');
+  g+=pg([iso(0,0),iso(19,0),iso(19,19),iso(0,19)],'#F4F6FA');
+  // Red River — soft mono
+  g+=pg([iso(16.6,0),iso(19,0),iso(19,19),iso(16.6,19)],'#DEE6F0');
+  g+=pg([iso(17.1,1),iso(17.5,1),iso(17.5,18),iso(17.1,18)],'rgba(255,255,255,.6)');
+  // roads — clean white with pale dashes
+  g+=pg([iso(7.6,0),iso(8.9,0),iso(8.9,19),iso(7.6,19)],'#FFFFFF');
+  g+=pg([iso(0,8.6),iso(16.6,8.6),iso(16.6,9.9),iso(0,9.9)],'#FFFFFF');
+  for(let i=0;i<9;i++){ g+=pg([iso(8.2,i*2+0.3),iso(8.35,i*2+0.3),iso(8.35,i*2+1.1),iso(8.2,i*2+1.1)],'#E2E7F0');
+    if(i<8) g+=pg([iso(i*2+0.4,9.2),iso(i*2+1.2,9.2),iso(i*2+1.2,9.35),iso(0.4+i*2,9.35)],'#E2E7F0'); }
+  // ---- LANDMARK · Hồ Tây + Chùa Trấn Quốc (full color) ----
+  g+=pg([[0.4,0.4],[3.6,0.5],[4.3,2.2],[3.2,4.0],[1.0,4.2],[0.2,2.4]].map(p=>iso(p[0],p[1])),'#63C8B8');
+  g+=pg([[1.0,1.0],[3.2,1.1],[3.6,2.2],[2.8,3.4],[1.3,3.5],[0.8,2.3]].map(p=>iso(p[0],p[1])),'#84D8CA');
+  g+=pg([[1.4,1.5],[2.8,1.5],[2.9,2.7],[1.5,2.8]].map(p=>iso(p[0],p[1])),'#A9C89A');
+  g+=box(1.55,1.65,.9,.9,8,'#E8DCBE');
+  { let z=8; for(let i=0;i<6;i++){ const t=.74-.09*i, cx0=2.0-t/2, cy0=2.1-t/2;
+      g+=box(cx0,cy0,t,t,10,'#C2503A',z);
+      g+=box(cx0-.07,cy0-.07,t+.14,t+.14,2.6,'#8F2F1F',z+10);
+      z+=12.6; }
+    const tip=iso(2.0,2.1,z+2), tip2=iso(2.0,2.1,z+16);
+    g+=`<line x1="${tip[0]}" y1="${tip[1]}" x2="${tip2[0]}" y2="${tip2[1]}" stroke="#8F2F1F" stroke-width="2.4"/>
+        <circle cx="${tip2[0]}" cy="${tip2[1]}" r="3.6" fill="#F2B33D"/>`; }
+  // ---- LANDMARK · Hoàn Kiếm + Tháp Rùa (full color) ----
+  const lake=[[1.6,11.6],[4.4,10.6],[6.6,11.4],[7.1,13.6],[5.6,16.3],[2.9,16.8],[1.2,14.6]];
+  g+=pg(lake.map(p=>iso(p[0],p[1])),'#39B7A0');
+  g+=pg([[2.6,12.3],[4.8,11.6],[6.0,12.6],[5.6,14.8],[3.4,15.6],[2.2,14.0]].map(p=>iso(p[0],p[1])),'#5ACDB8');
+  g+=`<ellipse cx="${iso(3.4,13.2)[0]}" cy="${iso(3.4,13.2)[1]}" rx="26" ry="8" fill="rgba(255,255,255,.35)"/>`;
+  const ix=4.1, iy=13.4;
+  g+=pg([iso(ix-.7,iy-.5),iso(ix+1.4,iy-.4),iso(ix+1.5,iy+1.2),iso(ix-.6,iy+1.3)],'#8FBF8F');
+  g+=box(ix,iy,.85,.85,16,'#D9CBB2');
+  g+=roof(ix-.08,iy-.08,1.0,1.0,16,7,'#C9563A');
+  g+=box(ix+.14,iy+.14,.56,.56,14,'#E7DCC6',21);
+  g+=roof(ix+.06,iy+.06,.72,.72,35,8,'#C9563A');
+  g+=box(ix+.28,iy+.28,.3,.3,9,'#EFE6D2',43);
+  g+=roof(ix+.22,iy+.22,.42,.42,52,9,'#B8452C');
+  g+=`<circle cx="${iso(ix+.43,iy+.43,64)[0]}" cy="${iso(ix+.43,iy+.43,64)[1]}" r="3" fill="#F2B33D"/>`;
+  // ---- generic Old-Quarter tube houses — matte white/gray ----
+  const MONO=['#FFFFFF','#F1F4F8','#E9EDF4','#F6F8FB','#EDF1F6','#FBFCFE'];
+  [62,82,70,92,66,78].forEach((h,i)=>{ g+=tubeHouse(1.0+i*1.15,6.6,h,MONO[i%6]); });
+  [58,74,88,64,80].forEach((h,i)=>{ g+=tubeHouse(9.8+i*1.15,6.4,h,MONO[(i+2)%6]); });
+  [70,60,84].forEach((h,i)=>{ g+=tubeHouse(13.0+i*1.18,11.4,h,MONO[(i+4)%6]); });
+  // ---- LANDMARK · Nhà hát Lớn (Opera House, full color) ----
+  g+=box(9.3,11.7,2.7,2.1,4,'#E9EDF3');
+  g+=box(9.55,11.95,2.2,1.6,24,'#F4E8C4');
+  for(let i=0;i<6;i++){ g+=box(9.72+i*0.32,13.42,.12,.13,20,'#FFFFFF',4); }
+  g+=box(9.45,11.85,2.4,1.8,3.4,'#CBD3DC',28);
+  g+=roof(9.85,12.05,1.6,1.3,31.4,10,'#7E93A3');
+  g+=`<circle cx="${iso(10.65,12.7,45)[0]}" cy="${iso(10.65,12.7,45)[1]}" r="3" fill="#F2B33D"/>`;
+  // ---- LANDMARK · Cột cờ Hà Nội (Flag Tower, full color) ----
+  g+=box(12.6,14.6,2,2,14,'#EAD9B6'); g+=box(13.0,15.0,1.2,1.2,26,'#E2CBA2',14);
+  g+=box(13.35,15.35,.5,.5,52,'#D9BB8C',40);
+  g+=roof(13.28,15.28,.64,.64,92,8,'#B8452C');
+  { const t=iso(13.6,15.6,104), f=iso(13.6,15.6,128);
+    g+=`<line x1="${t[0]}" y1="${t[1]}" x2="${f[0]}" y2="${f[1]}" stroke="#8A6A4B" stroke-width="2.4"/>
+    <polygon points="${f[0]},${f[1]} ${f[0]+30},${f[1]+5} ${f[0]},${f[1]+13}" fill="#DA251D"/>
+    <circle cx="${f[0]+12}" cy="${f[1]+7}" r="2.6" fill="#FFDD00"/>`; }
+  // ---- LANDMARK · Long Biên bridge (rust steel, full color) ----
+  { const a=iso(15.9,3.2), b=iso(19.6,3.2);
+    let br=`<polygon points="${a[0]},${a[1]} ${b[0]},${b[1]} ${b[0]},${b[1]+7} ${a[0]},${a[1]+7}" fill="#8A5240"/>`;
+    for(let i=0;i<6;i++){const x0=a[0]+(b[0]-a[0])*i/6, y0=a[1]+(b[1]-a[1])*i/6, x1=a[0]+(b[0]-a[0])*(i+1)/6, y1=a[1]+(b[1]-a[1])*(i+1)/6;
+      br+=`<path d="M${x0},${y0} Q${(x0+x1)/2},${y0-16} ${x1},${y1}" fill="none" stroke="#5F3527" stroke-width="3"/>
+      <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#5F3527" stroke-width="1.6"/>`;}
+    g+=br; }
+  // trees — matte mono
+  [[6.9,5.3,.9],[9.4,4.6,1],[15.6,6.7,1.1],[0.8,17.8,1],[7.2,17.6,1],[9.0,15.9,.9],[15.3,12.6,1],[6.6,10.3,.8],[15.8,17.4,1],[5.6,4.8,.9]]
+    .forEach(t=>g+=tree(t[0],t[1],t[2]));
+  // landing pad
+  const hx=opts.homeX??14.9, hy=opts.homeY??17.2;
+  g+=pg([iso(hx-1,hy-1),iso(hx+1,hy-1),iso(hx+1,hy+1),iso(hx-1,hy+1)],'#FFFFFF');
+  g+=`<ellipse cx="${iso(hx,hy)[0]}" cy="${iso(hx,hy)[1]}" rx="30" ry="12" fill="none" stroke="${TEAL}" stroke-width="2.6" stroke-dasharray="7 6"/>
+  <text x="${iso(hx,hy)[0]}" y="${iso(hx,hy)[1]+5}" text-anchor="middle" font-size="15" font-weight="900" fill="${TEAL}">H</text>`;
+  const rx=1.55, ry=6.6;
+  const restTop=iso(rx+.45,ry+.7,70), homePt=iso(hx,hy);
+  g+=pin(rx+.45,ry+.75,66,'#E85D3D','🍜');
+  g+=pin(hx,hy,4,'#F2B33D','🏠');
+  const A={x:restTop[0],y:restTop[1]-52}, B={x:homePt[0],y:homePt[1]-14};
+  const C1={x:A.x+150,y:A.y-120}, C2={x:B.x-170,y:B.y-160};
+  const path=`M ${A.x},${A.y} C ${C1.x},${C1.y} ${C2.x},${C2.y} ${B.x},${B.y}`;
+  g+=`<path id="flightPath" d="${path}" fill="none" stroke="rgba(21,34,31,.35)" stroke-width="2.6" stroke-dasharray="3 9" stroke-linecap="round"/>`;
+  g+=`<ellipse id="droneShadow" cx="${A.x}" cy="${homePt[1]}" rx="16" ry="6" fill="rgba(21,34,31,.16)" opacity="0"/>`;
+  if(opts.drone) g+=droneSVG('drone');
+  svg.innerHTML = `<g id="cam">${g}</g>`;
+  return {A,B,ground:{ax:A.x, ay:restTop[1]+30, by:homePt[1]}};
+}
+/* persistent background city with idle drone */
+(function(){ const a=buildCity($('bgCity'),{drone:true});
+  const d=document.querySelector('#bgCity #drone');
+  d.setAttribute('transform',`translate(${(a.A.x+a.B.x)/2-30},${Math.min(a.A.y,a.B.y)-46})`);
+  d.querySelector('#drone-body').classList.add('dronebob');
+})();
+
+/* =================== HOME LISTS =================== */
+CATS.forEach((c,i)=>{ const b=document.createElement('button'); b.className='cat'+(i===0?' on':'');
+  b.innerHTML=`<span>${c[1]}</span><span class='em'>${c[0]}</span>`; b.onclick=()=>{document.querySelectorAll('.cat').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  $('cats').appendChild(b); });
+RESTAURANTS.forEach(r=>{
+  const d=document.createElement('div'); d.className='rest';
+  d.innerHTML=`<div class="thumb" style="background:${r.tint}">${r.emoji}</div>
+   <div class="info"><h3>${r.name}</h3><p>${r.sub}</p>
+   <div class="meta"><span class="tag star">⭐ ${r.rating}</span><span class="tag drone">🛸 ${r.fly} min fly</span><span class="tag">${r.dist}</span></div></div>
+   <div class="go">→</div>`;
+  d.onclick=()=>openMenu(r); $('restList').appendChild(d);
+});
+
+/* =================== MENU / CART =================== */
+function openMenu(r){
+  state.rest=r; state.cart={};
+  $('menuTitle').textContent=r.name; $('menuName').textContent=r.name; $('menuSub').textContent=r.sub;
+  $('menuBig').textContent=r.emoji; $('menuHero').style.background=r.hero;
+  $('menuRate').textContent=r.rating; $('menuFly').textContent=r.fly; $('menuDist').textContent=r.dist;
+  const list=$('itemList'); list.innerHTML='';
+  r.items.forEach((it,idx)=>{
+    const row=document.createElement('div'); row.className='item';
+    row.innerHTML=`<div class="em">${it.em}</div><div class="nm"><h4>${it.n}</h4><p>${it.e}</p><b>${VND(it.p)}</b></div>
+    <div class="step"><button data-a="-1">−</button><span id="q-${idx}">0</span><button class="add" data-a="1">＋</button></div>`;
+    row.querySelectorAll('.step button').forEach(b=>b.onclick=()=>{
+      const q=Math.max(0,(state.cart[idx]||0)+ +b.dataset.a); state.cart[idx]=q;
+      $('q-'+idx).textContent=q; renderCart();
+    });
+    list.appendChild(row);
+  });
+  renderCart(); show('scr-menu');
+}
+const cartCount=()=>Object.values(state.cart).reduce((a,b)=>a+b,0);
+const cartSubtotal=()=>Object.entries(state.cart).reduce((s,[i,q])=>s+state.rest.items[i].p*q,0);
+function renderCart(){
+  const n=cartCount(), bar=$('cartbarMenu');
+  if(!n){bar.classList.remove('show');return;}
+  bar.classList.add('show');
+  bar.innerHTML=`<div><small>${n} item${n>1?'s':''} · ${state.rest.name}</small><b>${VND(cartSubtotal())}</b></div>
+   <div class="cta">Choose landing spot →</div>`;
+  bar.onclick=()=>show('scr-map');
+}
+
+/* =================== SATELLITE MAP =================== */
+const MAPSZ=1400;
+function satSVG(){
+  let rnd=9; const R=()=>{rnd=(rnd*16807)%2147483647;return rnd/2147483647;};
+  let s=`<rect width="${MAPSZ}" height="${MAPSZ}" fill="#43503A"/>`;
+  for(let i=0;i<60;i++){const x=R()*MAPSZ,y=R()*MAPSZ,w=90+R()*260,h=70+R()*200;
+    s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="30" fill="${['#4A5840','#3E4B36','#4F5C44','#465440'][i%4]}" opacity=".8"/>`;}
+  // lake corner (Hoàn Kiếm)
+  s+=`<path d="M-60,240 C160,140 340,220 380,420 C400,560 260,660 60,640 L-60,660 Z" fill="#2E7D74"/>
+      <path d="M-40,300 C120,220 280,280 320,430 C336,540 240,606 80,590 L-40,600 Z" fill="#3B958A" opacity=".8"/>`;
+  // streets
+  const streets=[`M0,${MAPSZ*.56} C ${MAPSZ*.3},${MAPSZ*.5} ${MAPSZ*.6},${MAPSZ*.62} ${MAPSZ},${MAPSZ*.55}`,
+                 `M${MAPSZ*.62},0 C ${MAPSZ*.58},${MAPSZ*.4} ${MAPSZ*.7},${MAPSZ*.7} ${MAPSZ*.6},${MAPSZ}`,
+                 `M${MAPSZ*.24},${MAPSZ} C ${MAPSZ*.3},${MAPSZ*.8} ${MAPSZ*.2},${MAPSZ*.72} ${MAPSZ*.3},${MAPSZ*.58}`];
+  streets.forEach(p=>{s+=`<path d="${p}" fill="none" stroke="#2C3328" stroke-width="64"/>
+    <path d="${p}" fill="none" stroke="#8D8D84" stroke-width="46"/>
+    <path d="${p}" fill="none" stroke="#C9C6B8" stroke-width="2.4" stroke-dasharray="18 22"/>`;});
+  // house lots
+  for(let i=0;i<26;i++){
+    const x=80+R()*(MAPSZ-260), y=80+R()*(MAPSZ-260), rot=(R()*30-15).toFixed(1);
+    if(x<430&&y<640) continue; // keep lake clear
+    const w=95+R()*70, h=70+R()*50, c=['#6E7277','#7D828A','#8A6F5A','#75655A','#8E9299'][i%5];
+    s+=`<g transform="translate(${x},${y}) rotate(${rot})">
+      <rect x="4" y="6" width="${w}" height="${h}" rx="5" fill="rgba(0,0,0,.35)"/>
+      <rect width="${w}" height="${h}" rx="5" fill="${c}"/>
+      <rect width="${w/2}" height="${h}" rx="5" fill="${'#fff'}" opacity=".09"/>
+      <line x1="${w/2}" y1="0" x2="${w/2}" y2="${h}" stroke="rgba(0,0,0,.25)" stroke-width="2.5"/>
+      <rect x="${w*.2}" y="${h}" width="26" height="34" fill="#9B978A" opacity=".9"/></g>`;
+    if(R()>.55) s+=`<rect x="${x+w+18}" y="${y+10}" width="16" height="30" rx="4" fill="${R()>.5?'#B8412F':'#3D4E63'}" transform="rotate(${rot} ${x+w+18} ${y+10})"/>`;
+  }
+  // pools & trees
+  s+=`<rect x="${MAPSZ*.72}" y="${MAPSZ*.3}" width="70" height="46" rx="20" fill="#4FC3D9"/>`;
+  for(let i=0;i<90;i++){const x=R()*MAPSZ,y=R()*MAPSZ,r=9+R()*22;
+    s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${['#26361F','#2F4426','#1F2E1A'][i%3]}" opacity="${.75+R()*.25}"/>
+        <circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.5}" fill="#3A5427" opacity=".8"/>`;}
+  // scale + pin group
+  s+=`<g id="satPin" opacity="0"></g>`;
+  return s;
+}
+const map={x:0,y:0,s:1,built:false,pointers:new Map(),moved:false,pinchD:0};
+function initMap(){
+  const view=$('mapview'), layer=$('maplayer');
+  if(!map.built){
+    layer.innerHTML=`<svg id="satsvg" width="${MAPSZ}" height="${MAPSZ}" viewBox="0 0 ${MAPSZ} ${MAPSZ}">${satSVG()}</svg>`;
+    map.built=true; bindMap(view,layer);
+  }
+  const r=view.getBoundingClientRect();
+  map.s=Math.max(r.width/MAPSZ, r.height/MAPSZ)*1.7;
+  map.x=r.width/2-MAPSZ/2*map.s; map.y=r.height/2-MAPSZ/2*map.s;
+  apply(); placePin(MAPSZ*.52, MAPSZ*.66);
+}
+function apply(){ $('maplayer').style.transform=`translate(${map.x}px,${map.y}px) scale(${map.s})`; }
+function clampMap(){
+  const r=$('mapview').getBoundingClientRect();
+  map.s=Math.min(4,Math.max(Math.max(r.width,r.height)/MAPSZ, map.s));
+  map.x=Math.min(0,Math.max(r.width-MAPSZ*map.s,map.x));
+  map.y=Math.min(0,Math.max(r.height-MAPSZ*map.s,map.y));
+}
+function zoomAt(f,cx,cy){
+  const r=$('mapview').getBoundingClientRect(), px=cx-r.left, py=cy-r.top;
+  const mx=(px-map.x)/map.s, my=(py-map.y)/map.s;
+  map.s*=f; clampMap(); map.x=px-mx*map.s; map.y=py-my*map.s; clampMap(); apply();
+}
+function bindMap(view){
+  view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);
+    map.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); map.moved=false;
+    if(map.pointers.size===2){const p=[...map.pointers.values()];map.pinchD=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);}});
+  view.addEventListener('pointermove',e=>{
+    if(!map.pointers.has(e.pointerId))return;
+    const prev=map.pointers.get(e.pointerId); map.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(map.pointers.size===1){
+      const dx=e.clientX-prev.x, dy=e.clientY-prev.y;
+      if(Math.abs(dx)+Math.abs(dy)>2) map.moved=true;
+      map.x+=dx; map.y+=dy; clampMap(); apply();
+    } else if(map.pointers.size===2){
+      const p=[...map.pointers.values()]; const d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+      if(map.pinchD) zoomAt(d/map.pinchD,(p[0].x+p[1].x)/2,(p[0].y+p[1].y)/2);
+      map.pinchD=d; map.moved=true;
+    }});
+  const up=e=>{ if(map.pointers.has(e.pointerId)&&map.pointers.size===1&&!map.moved){
+      const r=view.getBoundingClientRect();
+      placePin((e.clientX-r.left-map.x)/map.s,(e.clientY-r.top-map.y)/map.s);
+    } map.pointers.delete(e.pointerId); map.pinchD=0; };
+  view.addEventListener('pointerup',up); view.addEventListener('pointercancel',up);
+  view.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.deltaY<0?1.12:0.9,e.clientX,e.clientY);},{passive:false});
+  $('zin').onclick=()=>{const r=view.getBoundingClientRect();zoomAt(1.28,r.left+r.width/2,r.top+r.height/2);};
+  $('zout').onclick=()=>{const r=view.getBoundingClientRect();zoomAt(0.78,r.left+r.width/2,r.top+r.height/2);};
+  $('zloc').onclick=()=>{initMap();toast('Centered on your location');};
+}
+function placePin(mx,my){
+  state.pin={x:mx,y:my};
+  const g=document.querySelector('#satPin');
+  g.setAttribute('opacity','1');
+  g.innerHTML=`<circle cx="${mx}" cy="${my}" r="52" fill="rgba(242,179,61,.16)" stroke="#F2B33D" stroke-width="3" stroke-dasharray="10 8"/>
+   <circle cx="${mx}" cy="${my}" r="7" fill="#3B82F6" stroke="#fff" stroke-width="3"/>
+   <g transform="translate(${mx},${my-14})">
+     <path d="M0,0 C-20,-26 -20,-56 0,-56 C20,-56 20,-26 0,0 Z" fill="#F2B33D" stroke="#0d1412" stroke-width="3"/>
+     <circle cx="0" cy="-36" r="13" fill="#0d1412"/><text x="0" y="-30.5" text-anchor="middle" font-size="15">🏠</text></g>`;
+  $('latVal').textContent=(21.0285-(my-MAPSZ/2)*0.0000122).toFixed(6);
+  $('lngVal').textContent=(105.8542+(mx-MAPSZ/2)*0.0000122).toFixed(6);
+  $('zoneMsg').innerHTML='✅ Landing zone clear — 2×2 m verified by VinaFly vision.';
+}
+$('confirmSpot').onclick=()=>{
+  if(!state.pin){toast('Tap the map to drop a pin first');return;}
+  if(state.voice){ startFlight(); } else { renderPay(); show('scr-pay'); }
+};
+
+/* =================== CHECKOUT =================== */
+function renderPay(){
+  const r=state.rest;
+  $('payFrom').textContent=r.name;
+  $('payTo').textContent=$('addrInput').value||'Your landing pin';
+  $('payMins').textContent=r.fly;
+  let html=''; Object.entries(state.cart).forEach(([i,q])=>{ if(!q)return;
+    html+=`<div class="orow"><span>${q} × ${r.items[i].n}</span><b>${VND(r.items[i].p*q)}</b></div>`;});
+  $('payItems').innerHTML=html;
+  $('payFee').textContent=VND(DELIVERY_FEE);
+  $('payTotal').textContent=VND(cartSubtotal()+DELIVERY_FEE-DISCOUNT);
+  const pl=$('payList'); pl.innerHTML='';
+  PAYMENTS.forEach(p=>{ const d=document.createElement('div'); d.className='pay'+(state.payment===p.id?' on':'');
+    d.innerHTML=`<div class="logo" style="background:${p.bg};font-size:${p.tx.length>2?9:15}px">${p.tx}</div>
+      <div class="t"><b>${p.name}</b><small>${p.sub}</small></div><div class="radio"></div>`;
+    d.onclick=()=>{state.payment=p.id;renderPay();}; pl.appendChild(d); });
+}
+$('confirmOrder').onclick=()=>{
+  const p=PAYMENTS.find(p=>p.id===state.payment);
+  toast(`✓ Paid ${VND(cartSubtotal()+DELIVERY_FEE-DISCOUNT)} via ${p.name}`);
+  setTimeout(startFlight,650);
+};
+
+/* =================== FLIGHT SIM =================== */
+const PHASES=[['Nhận đơn','received'],['Cất cánh','takeoff'],['Đang bay','cruise'],['Hạ hàng','drop'],['Hoàn tất','done']];
+let flight=null;
+function startFlight(){
+  state.voice=false; $('voicewrap').classList.remove('show');
+  const anchors=buildCity($('trackCity'),{drone:true});
+  const svg=$('trackCity');
+  const path=svg.querySelector('#flightPath'); const len=path.getTotalLength();
+  $('phases').innerHTML=PHASES.map(p=>`<div class="ph"><div class="bar"><i></i></div><small>${p[0]}</small></div>`).join('');
+  $('trkFrom').textContent=state.rest?state.rest.name:'Restaurant';
+  $('trkTo').textContent=($('addrInput').value||'Landing pin').split(',')[0];
+  $('trkTotal').textContent=VND(cartSubtotal()+DELIVERY_FEE-DISCOUNT).replace(' ₫',' ₫');
+  $('donewrap').classList.remove('show');
+  document.querySelectorAll('.confetti').forEach(c=>c.remove());
+  $('flightNo').textContent='Flight VINAFLY-0'+(10+Math.floor(Math.random()*89))+' · autonomous';
+  flight={t0:performance.now(),T:46000,path,len,anchors,done:false,raf:0};
+  show('scr-track'); tick();
+}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function tick(){
+  if(!flight||flight.done)return;
+  const e=(performance.now()-flight.t0), t=Math.min(1,e/flight.T);
+  // path progress mapped to [0.07 .. 0.86]
+  let pt=(t-0.07)/(0.86-0.07); pt=Math.max(0,Math.min(1,pt)); pt=ease(pt);
+  const pos=flight.path.getPointAtLength(pt*flight.len);
+  // altitude profile
+  let alt=0;
+  if(t<0.07) alt=0; else if(t<0.15) alt=60*(t-0.07)/0.08;
+  else if(t<0.84) alt=60; else if(t<0.92) alt=60-44*(t-0.84)/0.08; else alt=16;
+  const drone=document.querySelector('#trackCity #drone');
+  drone.setAttribute('transform',`translate(${pos.x},${pos.y-0})`);
+  // tether + box
+  const tether=drone.querySelector('#drone-tether'), boxEl=drone.querySelector('#drone-box');
+  if(t>0.92&&t<0.985){ const k=(t-0.92)/0.065, drop=k*(alt*2.4);
+    tether.innerHTML=`<line x1="0" y1="6" x2="0" y2="${6+drop}" stroke="#9AA3AB" stroke-width="1.6"/>`;
+    boxEl.setAttribute('transform',`translate(0,${drop})`);
+  } else if(t>=0.985){ tether.innerHTML=''; boxEl.setAttribute('opacity','0'); }
+  // shadow
+  const sh=document.querySelector('#trackCity #droneShadow');
+  sh.setAttribute('opacity',t>0.06?'1':'0'); sh.setAttribute('cx',pos.x); sh.setAttribute('cy',pos.y+34+alt*.5);
+  sh.setAttribute('rx',18-alt*.12);
+  // camera follow
+  const cam=document.querySelector('#trackCity #cam');
+  const vw=$('trackworld').clientWidth, vh=$('trackworld').clientHeight, S=1.35;
+  let cx=vw/2-pos.x*S, cy=vh*0.42-(pos.y-alt*.4)*S;
+  cx=Math.min(60,Math.max(vw-1000*S-60,cx)); cy=Math.min(80,Math.max(vh-760*S-40,cy));
+  cam.setAttribute('transform',`translate(${cx},${cy}) scale(${S})`);
+  // HUD
+  const pct=Math.round(t*100);
+  $('pct').textContent=pct+'%';
+  $('pfill').style.width=pct+'%'; $('pknob').style.left=pct+'%';
+  const remain=Math.max(0,Math.ceil((flight.T-e)/1000));
+  $('etaClock').textContent=Math.floor(remain/60)+':'+String(remain%60).padStart(2,'0');
+  const spd=(t>0.15&&t<0.84)?(64+Math.sin(e/700)*6):(t<0.07?0:alt>20?38:12);
+  $('spd').innerHTML=Math.round(spd)+' <span class="u">km/h</span>';
+  $('altPill').textContent=Math.round(alt*1.2)+' m · '+(pct)+'%';
+  // status text
+  const st=(m,s,em)=>{ $('stMain').textContent=m; $('stSub').textContent=s; $('stEmoji').textContent=em; };
+  let phase=0;
+  if(t<0.07){ st('Order received','Kitchen is packing your order · drone docking','📦'); phase=0; }
+  else if(t<0.15){ st('Drone lifting off','Cất cánh from the rooftop nest','🛫'); phase=1; }
+  else if(t<0.84){ st('In flight over Hà Nội','Cruising the Hoàn Kiếm sky-lane','🛸'); phase=2; }
+  else if(t<0.985){ st('Lowering your order','Hovering · tether descending gently','🪝'); phase=3; }
+  else { st('Delivered','Tether released · drone returning to nest','✅'); phase=4; }
+  document.querySelectorAll('#phases .ph').forEach((el,i)=>{
+    el.classList.toggle('done',i<phase); el.classList.toggle('now',i===phase); });
+  if(t>=1){ flight.done=true; setTimeout(finishFlight,900); return; }
+  flight.raf=requestAnimationFrame(tick);
+}
+function finishFlight(){
+  $('donewrap').classList.add('show');
+  const colors=['#E85D3D','#F2B33D','#12B5BC','#66DCE0','#DA251D'];
+  for(let i=0;i<44;i++){ const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'%'; c.style.background=colors[i%5];
+    c.style.animationDuration=(2.2+Math.random()*2)+'s'; c.style.animationDelay=(Math.random()*.8)+'s';
+    $('scr-track').appendChild(c); }
+}
+$('stars').querySelectorAll('span').forEach((s,i)=>s.onclick=()=>{
+  $('stars').querySelectorAll('span').forEach((x,j)=>x.classList.toggle('on',j<=i));
+  toast('Cảm ơn! Thanks for rating your flight ⭐'); });
+$('doneHome').onclick=()=>{ state.cart={}; renderCart(); show('scr-home'); };
+
+/* =================== VOICE ORDERING =================== */
+const SAMPLE='Order bún chả at Bún Chả Đắc Kim and make payment with Vietcombank.';
+let vBusy=false;
+$('voiceBtn').onclick=openVoice; $('voiceClose').onclick=()=>{ $('voicewrap').classList.remove('show'); vBusy=false; };
+function openVoice(){
+  $('voicewrap').classList.add('show');
+  $('vcard').classList.remove('show'); $('vbars').style.display='flex';
+  $('vlabel').textContent='Listening…'; $('vtext').innerHTML='<span class="cur">&nbsp;</span>';
+  vBusy=true;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let handled=false;
+  const useTranscript=tx=>{ if(handled||!vBusy)return; handled=true; typeOut(tx); };
+  if(SR){ try{
+      const rec=new SR(); rec.lang='vi-VN'; rec.interimResults=false;
+      rec.onresult=ev=>useTranscript(ev.results[0][0].transcript);
+      rec.onerror=()=>setTimeout(()=>useTranscript(SAMPLE),400);
+      rec.onend=()=>setTimeout(()=>useTranscript(SAMPLE),1200);
+      rec.start(); setTimeout(()=>{try{rec.stop()}catch(e){}},6000);
+    }catch(e){ setTimeout(()=>useTranscript(SAMPLE),1600); }
+  } else setTimeout(()=>useTranscript(SAMPLE),1600);
+}
+function typeOut(tx){
+  const el=$('vtext'); let i=0;
+  const step=()=>{ if(!vBusy)return;
+    el.innerHTML='“'+tx.slice(0,i)+'”<span class="cur">&nbsp;</span>';
+    if(i++<tx.length) setTimeout(step,22); else { el.innerHTML='“'+tx+'”'; parseVoice(tx); } };
+  step();
+}
+function parseVoice(tx){
+  const low=tx.toLowerCase();
+  let rest=RESTAURANTS.find(r=>low.includes(r.name.toLowerCase()))
+        || RESTAURANTS.find(r=>r.items.some(it=>low.includes(it.n.toLowerCase().split(' ')[0]+' '+ (it.n.toLowerCase().split(' ')[1]||''))));
+  if(!rest){ if(low.includes('bún chả')||low.includes('bun cha'))rest=RESTAURANTS[0];
+    else if(low.includes('phở')||low.includes('pho'))rest=RESTAURANTS[1];
+    else if(low.includes('bánh mì')||low.includes('banh mi'))rest=RESTAURANTS[2];
+    else if(low.includes('cà phê')||low.includes('coffee')||low.includes('ca phe'))rest=RESTAURANTS[4];
+    else rest=RESTAURANTS[0]; }
+  let itemIdx=rest.items.findIndex(it=>low.includes(it.n.toLowerCase())); if(itemIdx<0)itemIdx=0;
+  let pay='bank', payName='Vietcombank (Bank Transfer)';
+  if(low.includes('momo')){pay='momo';payName='MoMo';}
+  else if(low.includes('zalo')){pay='zalo';payName='ZaloPay';}
+  else if(low.includes('viettel')){pay='viettel';payName='ViettelPay';}
+  else if(low.includes('visa')||low.includes('master')){pay='visa';payName='Visa •••• 4021';}
+  else if(low.includes('vietcombank')||low.includes('bank')||low.includes('chuyển khoản')){pay='bank';payName='Vietcombank (Bank Transfer)';}
+  state.rest=rest; state.cart={[itemIdx]:1}; state.payment=pay; state.voice=true; state.voicePayName=payName;
+  $('vlabel').textContent='✦ Understood — order created';
+  $('vbars').style.display='none';
+  $('vcEm').textContent=rest.emoji; $('vcRest').textContent=rest.name;
+  $('vcItem').textContent='1 × '+rest.items[itemIdx].n;
+  $('vcPay').textContent=payName;
+  $('vcTotal').textContent=VND(rest.items[itemIdx].p+DELIVERY_FEE-DISCOUNT);
+  $('vcard').classList.add('show');
+}
+$('vcNext').onclick=()=>{
+  $('voicewrap').classList.remove('show'); vBusy=false;
+  toast('Pick where the drone should land 🛰️'); show('scr-map');
+  $('mapHint').innerHTML='<b>Voice order ready.</b> Tap the satellite view to set the exact landing coordinates, then confirm — payment via '+state.voicePayName+' completes automatically.';
+};
+</script>
+</body>
+</html>
